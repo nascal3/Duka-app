@@ -9,12 +9,17 @@
     <div class="videoContainer">
       <h3 class="catTitle2"> {{categoryName}}</h3>
 
-      <div v-if="videos.length <= 0" class="loaderContainer">
-        <img src="../../assets/loader.gif" alt="loader image">
-      </div>
-      <div class="videoContainer-video" v-if="videos.length > 0" v-for=" video in videos" @click=" visibleNum(video.id)" :key="video.id">
-        <video-clip :video = "video" :visible="visible"></video-clip>
-      </div>
+      <transition name="fade" mode="out-in">
+        <div v-if="videos.length <= 0" class="loaderContainer">
+          <img src="../../assets/loader.gif" alt="loader image">
+        </div>
+      </transition>
+
+      <transition-group name="zoom" mode="out-in">
+        <div class="videoContainer-video" v-if="videos.length > 0" v-for=" video in videos" @click=" visibleNum(video.id)" :key="video.id">
+          <video-clip :video = "video" :visible="visible"></video-clip>
+        </div>
+      </transition-group>
 
     </div>
 
@@ -101,7 +106,6 @@
     width: 80%;
     float: right;
     margin-bottom: 50px;
-    /*border: solid 1px;*/
 
     @media( max-width: 779px) {
       width: 60%;
@@ -124,6 +128,42 @@
       @media( max-width: 779px) {
         width: 100%;
       }
+    }
+  }
+
+  .fade-enter-active {
+    animation: fade-in .8s ease-out forwards;
+  }
+
+  .fade-leave-active {
+    animation: fade-in .8s ease-out reverse;
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .zoom-enter-active {
+    animation: zoom-in .8s ease-out forwards;
+  }
+
+  .zoom-leave-active {
+    animation: zoom-in .8s ease-out reverse;
+  }
+
+  @keyframes zoom-in {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
     }
   }
 </style>
