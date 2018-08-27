@@ -1,13 +1,14 @@
 <template>
   <div id="signin">
+    <div class="loginError" v-if="show">Username or password did not match!</div>
     <div class="signin-form">
       <form @submit.prevent="onSubmit">
         <div class="input">
-          <label for="email">Mail</label>
+          <label for="email">Username</label>
           <input
                   type="email"
                   id="email"
-                  v-model="email">
+                  v-model="username">
         </div>
         <div class="input">
           <label for="password">Password</label>
@@ -17,7 +18,10 @@
                   v-model="password">
         </div>
         <div class="submit">
-          <button type="submit">Submit</button>
+          <button type="submit">
+            <span v-if="!loading">Submit</span>
+            <span v-if="loading">logging in...</span>
+          </button>
         </div>
       </form>
     </div>
@@ -30,20 +34,27 @@
   export default {
     data () {
       return {
-        email: '',
+        loading: false,
+        username: '',
         password: ''
+      }
+    },
+    computed: {
+      show() {
+          return this.$store.getters.loginErrorState;
       }
     },
     methods: {
       onSubmit () {
+        this.loading = true;
+
         const formData = {
-          email: this.email,
+          username: this.username,
           password: this.password,
         };
 
-        console.log(formData)
         this.$store.dispatch('login', formData);
-
+        this.loading = false;
       }
     },
     created() {
@@ -55,6 +66,16 @@
 </script>
 
 <style scoped>
+
+  .loginError {
+    position: relative;
+    color: red;
+    font-weight: 700;
+    left: 39%;
+    display: inline-block;
+    top: 13px;
+  }
+
   .signin-form {
     width: 400px;
     margin: 30px auto;
