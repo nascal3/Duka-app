@@ -6,9 +6,6 @@
     <nav>
       <ul>
         <li v-if="!show">
-          <!--<router-link to="/signup">Sign Up</router-link>-->
-        </li>
-        <li v-if="!show">
           <router-link to="/signin">Sign In</router-link>
         </li>
         <li v-if="show">
