@@ -1,99 +1,80 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import axios from './axios-auth';
+import qs from 'qs' ;
 import globalAxios from 'axios';
 import router from './router'
 
+Vue.use(Vuex);
 
-Vue.use(Vuex)
+const config = {
+    headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+};
 
 export default new Vuex.Store({
   state: {
       idToken: null,
-      userId: null,
-      user: null
+      logError: null,
+      videos: [],
+      client_id: 'ZYzNI3AyutksMp7vnZWmvSGMwSkClqxW2cn9MaVW',
+      grant_type: 'password',
+
   },
   mutations: {
         authUser (state, userData) {
             state.idToken = userData.token;
-            state.userId= userData.userId;
         },
-        storeUser (state, user) {
-            state.user = user;
+        setErrorState (state, data) {
+            state.logError = data;
+        },
+        storeVideos (state, videos) {
+            state.videos = videos;
         },
         clearAllData (state) {
             state.idToken = null;
-            state.userId = null;
-            state.user = null;
         }
   },
   actions: {
       setLogoutTimer ({commit}, expirationTime) {
           setTimeout(() =>{
               commit('clearAllData');
-              router.replace('/signup');
+              router.replace('/signin');
           },expirationTime * 1000)
       },
-      signup ({commit, dispatch}, authData) {
-          axios.post('/signupNewUser?key=AIzaSyA_VQ3xAjrm8G6Iml729ZTXgi1B6cOxIWg', {
-              email: authData.email,
+      login ({commit, state, dispatch}, authData) {
+
+          let setData =  qs.stringify({
+              username: authData.username,
               password: authData.password,
-              returnSecureToken: true
-          }).then( res => {
-              console.log(res);
-              commit('authUser', {
-                  token: res.data.idToken,
-                  userId: res.data.localId
-              });
+              client_id: state.client_id,
+              grant_type: state.grant_type
+          });
+
+          axios.post('/oauth/token/', setData, config)
+              .then( res => {
               const now = new Date();
-              const expirationDate = new Date(now.getTime() + res.data.expiresIn * 1000);
-              localStorage.setItem('token', res.data.idToken);
-              localStorage.setItem('userId', res.data.localId);
-              localStorage.setItem('expiresIn', expirationDate);
-              dispatch('storeUser', authData);
-              dispatch('setLogoutTimer', res.data.expiresIn);
-          }).catch(err => console.error(err.message));
-      },
-      storeUser ({commit, state}, userData) {
-          if (!state.idToken) return;
-          globalAxios.post('/user.json' + '?auth=' + state.idToken, userData)
-              .then( res => console.log(res))
-              .catch(err => console.error(err.message));
-      },
-      login ({commit, dispatch}, authData) {
-          axios.post('/verifyPassword?key=AIzaSyA_VQ3xAjrm8G6Iml729ZTXgi1B6cOxIWg', {
-              email: authData.email,
-              password: authData.password,
-              returnSecureToken: true
-          }).then( res => {
-              console.log(res);
-              const now = new Date();
-              const expirationDate = new Date(now.getTime() + res.data.expiresIn * 1000);
-              localStorage.setItem('token', res.data.idToken);
-              localStorage.setItem('userId', res.data.localId);
+              const expirationDate = new Date(now.getTime() + res.data.expires_in * 1000);
+              localStorage.setItem('token', res.data.access_token);
               localStorage.setItem('expiresIn', expirationDate);
               commit('authUser', {
-                  token: res.data.idToken,
-                  userId: res.data.localId
+                  token: res.data.access_token
               });
-              dispatch('setLogoutTimer', res.data.expiresIn);
+              dispatch('setLogoutTimer', res.data.expires_in);
               router.replace('/dashboard');
 
-          }).catch(err => console.error(err.message));
+          }).catch(err => {
+             commit('setErrorState', true);
+             console.error(err.message);
+          });
       },
-      fetchUser ({commit, state}, payload) {
+      fetchVideos ({commit, state}) {
           if (!state.idToken) return;
-          globalAxios.get('/user.json' + '?auth=' + state.idToken)
+          axios.get('/api/v1/videos/')
               .then((res) => {
                   const data = res.data;
-                  console.log(data);
-
-                  const users = [];
-                  for(let key in data) {
-                      users.push(data[key]);
-                  }
-                  commit('storeUser', users[0]);
-                  console.log(users);
+                  commit('storeVideos', data.results);
               }).catch( err => console.error(err.message));
       },
       tryAutoLogin ({commit}) {
@@ -103,24 +84,24 @@ export default new Vuex.Store({
           const now = new Date();
           if (now >= expirationDate) return;
 
-          const userId = localStorage.getItem('userId');
           commit('authUser', {
-              token: token,
-              userId: userId
+              token: token
           });
       },
       logOut ({commit}) {
           commit('clearAllData');
           localStorage.removeItem('token');
           localStorage.removeItem('expiresIn');
-          localStorage.removeItem('userId');
           router.replace('/signin');
       }
 
   },
   getters: {
-    user (state) {
-        return state.user;
+    loginErrorState (state) {
+        return state.logError === true;
+    },
+    getVideos (state) {
+        return state.videos;
     },
     isAuth (state) {
         return state.idToken !== null;
