@@ -1,63 +1,70 @@
 <template>
   <div id="dashboard">
     <h1>Media Library</h1>
-    <h3 class="catTitle">Categories</h3>
-    <div class="sideNav">
-      <ul>
-        <li class="active">ctegory</li>
-        <li>ctegory</li>
-        <li>ctegory</li>
-        <li>ctegory</li>
-        <li>ctegory</li>
-        <li>ctegory</li>
-        <li>ctegory</li>
-      </ul>
+
+    <div class="categorynav">
+      <CategoryNav :videos="results" @getCategory="sendCategory"></CategoryNav>
     </div>
 
-
     <div class="videoContainer">
-      <h3 class="catTitle2"> Something Category</h3>
+      <h3 class="catTitle2"> {{categoryName}}</h3>
 
-      <div class="videoContainer-video"  v-for=" video in videos" @click=" visibleNum(video.id)" :key="video.id">
-        <video-clip :title="video.title" :id="video.id" :visible="visible"></video-clip>
+      <div v-if="videos.length <= 0" class="loaderContainer">
+        <img src="../../assets/loader.gif" alt="loader image">
+      </div>
+      <div class="videoContainer-video" v-if="videos.length > 0" v-for=" video in videos" @click=" visibleNum(video.id)" :key="video.id">
+        <video-clip :video = "video" :visible="visible"></video-clip>
       </div>
 
     </div>
-
-
 
   </div>
 </template>
 
 <script>
   import videoClip from './VideoClip.vue'
+  import CategoryNav from './Catnav.vue'
 
     export default {
         data() {
             return {
                 visible: null,
-                videos: [
-                    {id: 1, title: 'one'},
-                    {id: 2, title: 'two'},
-                    {id: 3, title: 'three'},
-                    {id: 4, title: 'four'},
-                    {id: 5, title: 'five'}
-                ]
+                categoryName: 'All categories',
+                videos: []
             }
         },
         components: {
-            videoClip
+            videoClip,
+            CategoryNav
         },
         methods: {
             visibleNum(num) {
                 this.visible = num;
+            },
+            sendCategory(category) {
+                if (category === null ) {
+                    this.videos = this.results;
+                    this.categoryName = 'All categories';
+                    return;
+                }
+
+                const newResults = this.results.filter(video => video.category === category.id);
+                this. categoryName = category.category_name;
+                this.videos = newResults;
             }
         },
+        computed: {
+            results() {
+                this.videos = this.$store.getters.getVideos;
+                return this.$store.getters.getVideos;
+            }
+        },
+        mounted() {
+            this.$store.dispatch('fetchVideos');
+        }
 
     }
 </script>
-
-
 
 <style lang="scss" scoped>
 
@@ -69,61 +76,31 @@
     color: red;
   }
 
-  .catTitle {
-    padding-left: 10px;
-    width: 17%;
+  .loaderContainer {
+    position: relative;
+    left: 50%;
+    overflow: hidden;
+    width: 550px;
+    transform: translateX(-50%);
+
+    & img {
+      max-width: 100%;
+    }
   }
 
   .catTitle2 {
     text-align: center;
   }
 
-  .sideNav {
+  .categorynav {
     float: left;
     width: 18%;
-    background-color: #ddd;
-
-    @media( max-width: 779px) {
-      width: 40%;
-    }
-
-    & h3 {
-      background-color: transparent;
-    }
-
-    & ul {
-      padding-left: 0;
-      margin: 0;
-
-      & li {
-        position: relative;
-        padding: 15px 0 15px 10px;
-        list-style: none;
-        cursor: pointer;
-        background-color: #f3efec;
-        left: 0;
-        border-bottom: solid 1px #f9f4f1;
-        transition: all .5s;
-
-        &:hover {
-          background-color: #ddd;
-          left: 7px;
-        }
-
-        &.active {
-          background-color: #ddd;
-          left: 7px;
-        }
-      }
-    }
   }
 
   .videoContainer {
-    position: relative;
-    display: inline-block;
     width: 80%;
     float: right;
-    top: -60px;
+    margin-bottom: 50px;
     /*border: solid 1px;*/
 
     @media( max-width: 779px) {
