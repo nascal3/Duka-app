@@ -2,19 +2,23 @@
     <div>
         <div class="videoThumb">
             <img src="https://via.placeholder.com/300x200">
-        </div>
-        <div class="videoTitle">
-           Video {{title}}
+            <div class="videoThumb-title">
+                {{video.name}}
+            </div>
         </div>
 
-        <el-dialog id="videoMode" :visible.sync="show" width="70%" center>
-            <div class="modalVideoTitle">Video {{ title}}</div>
 
-            <video controls>
-                <source src="movie.mp4" type="video/mp4">
-                <source src="movie.ogg" type="video/ogg">
+        <el-dialog id="videoMode" :visible.sync="show" width="70%" :before-close="handleClose" center>
+            <div class="modalVideoTitle">Video {{video.name}}</div>
+
+            <video ref="videoPlayer" controls>
+                <source :src="video.file_path" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
+
+            <div class="modalVideoDesc">
+                {{video.description}}
+            </div>
 
         </el-dialog>
 
@@ -29,24 +33,24 @@
             }
         },
         props: {
-            title: {
-                type: String
+            video: {
+                type: Object
             },
             visible: {
-                type: Number
-            },
-            id: {
                 type: Number
             }
 
         },
+        methods: {
+            handleClose() {
+               const vid =  this.$refs.videoPlayer;
+               vid.pause();
+               this.show = false;
+            }
+        },
         watch: {
             visible() {
-                if(this.id === this.visible) {
-                    this.show = true;
-                } else {
-                    this.show =  false;
-                }
+                this.show = this.video.id === this.visible;
             }
         }
     }
@@ -61,9 +65,16 @@
         font-weight: 700;
     }
 
+    .modalVideoDesc {
+        position: relative;
+        left: 18px;
+        width: 97%;
+    }
+
     video {
         width: 95%;
         margin-top: 15px;
+        margin-bottom: 15px;
         position: relative;
         left: 50%;
         transform: translateX(-50%);
@@ -71,7 +82,6 @@
 
     .videoThumb {
         width: 300px;
-        height: 200px;
         overflow: hidden;
         cursor: pointer;
 
@@ -80,17 +90,19 @@
             position: relative;
             left: 10px;
         }
+
+        &-title {
+            position: relative;
+            overflow: hidden;
+            left: 51%;
+            transform: translateX(-49%);
+            font-weight: 300;
+            font-size: 16px;
+            width: 287px;
+            cursor: pointer;
+            height: 38px;
+        }
     }
 
-    .videoTitle {
-        position: relative;
-        left: 54%;
-        transform: translateX(-50%);
-        top: 9px;
-        font-weight: 700;
-        font-size: 16px;
-        width: 300px;
-        cursor: pointer;
-    }
 
 </style>
