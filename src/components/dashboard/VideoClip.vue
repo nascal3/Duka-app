@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="videoThumb">
-            <img src="https://via.placeholder.com/300x200">
+            <img src="../../assets/vidThumb.jpg">
             <div class="videoThumb-title">
                 {{video.name}}
             </div>
