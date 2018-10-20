@@ -44,12 +44,8 @@
       },
     watch: {
       show(newValue, oldValue) {
-        console.log(newValue);
         if (newValue) {
-          setTimeout(() => {
-            this.usersName = localStorage.getItem('userFirstName');
-            console.log('>>>'+this.usersName);
-          },3000);
+          this.usersName = this.$store.getters.getUsersName;
         }
       }
     },
