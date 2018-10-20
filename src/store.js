@@ -16,6 +16,7 @@ export default new Vuex.Store({
   state: {
       idToken: null,
       logError: null,
+      usersName: null,
       videos: [],
       client_id: 'ZYzNI3AyutksMp7vnZWmvSGMwSkClqxW2cn9MaVW',
       grant_type: 'password',
@@ -24,6 +25,9 @@ export default new Vuex.Store({
   mutations: {
         authUser (state, userData) {
             state.idToken = userData.token;
+        },
+        setUsersName(state, usersName) {
+            state.usersName = usersName;
         },
         setErrorState (state, data) {
             state.logError = data;
@@ -52,6 +56,12 @@ export default new Vuex.Store({
                 return user.email === userEmail;
               });
               localStorage.setItem('userFirstName', userData.first_name);
+              const firstname = localStorage.getItem('userFirstName');
+              commit('setUsersName', firstname );
+
+              if (userData) {
+                router.replace('/dashboard');
+              }
             }).catch( err => console.error(err.message));
       },
       login ({commit, state, dispatch}, authData) {
@@ -73,9 +83,10 @@ export default new Vuex.Store({
                   token: res.data.access_token
               });
               dispatch('setLogoutTimer', res.data.expires_in);
-              router.replace('/dashboard');
+
               // ==== RUN PROCESS TO GET & FILTER USERNAME ====
               dispatch('setCurrentUsersName', authData.username);
+
 
           }).catch(err => {
              commit('setErrorState', true);
@@ -119,6 +130,9 @@ export default new Vuex.Store({
     },
     isAuth (state) {
         return state.idToken !== null;
+    },
+    getUsersName (state) {
+      return state.usersName;
     }
   }
 })
