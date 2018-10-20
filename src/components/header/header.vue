@@ -32,6 +32,7 @@
               return this.$store.getters.isAuth;
           },
         usersName() {
+            console.log(this.$store.getters.getUsersName);
             return this.$store.getters.getUsersName;
         }
 
