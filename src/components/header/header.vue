@@ -33,10 +33,6 @@
       }
     },
       computed: {
-        // usersName() {
-        //   console.log(this.$store.getters.getUsersName);
-        //   return this.$store.getters.getUsersName;
-        // },
         show() {
             return this.$store.getters.isAuth;
         }
