@@ -12,7 +12,7 @@
           <router-link to="/dashboard">Media Library</router-link>
         </li>
         <li v-if="show" class="settings">
-          <div v-if="usersName" class="userArea">
+          <div class="userArea">
             <div class="username">
               {{usersName}} <i class="fas fa-sign-out-alt"></i>
             </div>
@@ -27,23 +27,19 @@
 <script>
 
   export default {
-      data() {
-          return {
-            usersName: null
-          }
-      },
       computed: {
           show() {
               return this.$store.getters.isAuth;
-          }
+          },
+        usersName() {
+            return this.$store.getters.getUsersName;
+        }
+
       },
       methods: {
           logout() {
             this.$store.dispatch('logOut');
           }
-      },
-      mounted() {
-        this.usersName = localStorage.getItem('userFirstName');
       }
   }
 
