@@ -12,7 +12,7 @@
           <router-link to="/dashboard">Media Library</router-link>
         </li>
         <li v-if="show" class="settings">
-          <div class="userArea">
+          <div v-if="usersName" class="userArea">
             <div class="username">
               {{usersName}} <i class="fas fa-sign-out-alt"></i>
             </div>
