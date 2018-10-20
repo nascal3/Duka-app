@@ -44,7 +44,9 @@
           }
       },
     mounted() {
-      this.usersName = localStorage.getItem('userFirstName');
+      setTimeout(() =>{
+        this.usersName = localStorage.getItem('userFirstName');
+      },2000);
     }
   }
 
