@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="videoThumb">
-            <img src="../../assets/vidThumb.jpg">
+            <img src="https://drive.google.com/uc?id=1vGyvgPupfeKHZhcuntp6EpORQC1u0OzP">
             <div class="videoThumb-title">
                 {{video.name}}
             </div>
