@@ -11,8 +11,13 @@
         <li v-if="show">
           <router-link to="/dashboard">Media Library</router-link>
         </li>
-        <li v-if="show">
-          <button class="logout" @click="logout">Logout</button>
+        <li v-if="show" class="settings">
+          <div class="userArea">
+            <div class="username">
+              {{usersName}} <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <button class="logout" @click="logout">Logout</button>
+          </div>
         </li>
       </ul>
     </nav>
@@ -24,7 +29,7 @@
   export default {
       data() {
           return {
-
+            usersName: null
           }
       },
       computed: {
@@ -37,6 +42,9 @@
             this.$store.dispatch('logOut');
           }
       },
+      mounted() {
+        this.usersName = localStorage.getItem('userFirstName');
+      }
   }
 
 </script>
@@ -91,7 +99,37 @@
     color: #fa923f;
   }
 
+  .userArea {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .username {
+    width: 70px;
+    color: white;
+    display: flex;
+    padding: 5px 15px;
+  }
+
+  .username i {
+    margin-left: 6px;
+  }
+
+  li.settings {
+    width: 100px;
+    background-color: #fa923f;
+    border-radius: 5px;
+    overflow: hidden;
+    height: 27px;
+    transition: all .3s;
+  }
+
+  li.settings:hover {
+    width: 162px;
+  }
+
   .logout {
+    margin-right: 15px;
     background-color: transparent;
     border: none;
     font: inherit;
