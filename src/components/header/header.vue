@@ -27,11 +27,16 @@
 <script>
 
   export default {
+    data() {
+      return {
+        usersName: 'User'
+      }
+    },
       computed: {
-        usersName() {
-          console.log(this.$store.getters.getUsersName);
-          return this.$store.getters.getUsersName;
-        },
+        // usersName() {
+        //   console.log(this.$store.getters.getUsersName);
+        //   return this.$store.getters.getUsersName;
+        // },
         show() {
             return this.$store.getters.isAuth;
         }
@@ -41,7 +46,10 @@
           logout() {
             this.$store.dispatch('logOut');
           }
-      }
+      },
+    mounted() {
+      this.usersName = localStorage.getItem('userFirstName');
+    }
   }
 
 </script>
