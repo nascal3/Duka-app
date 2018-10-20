@@ -67,6 +67,7 @@
         },
         mounted() {
             this.$store.dispatch('fetchVideos');
+
         }
 
     }
