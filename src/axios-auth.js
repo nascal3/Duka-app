@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const instance = axios.create({
-   baseURL: 'http://api.smartduka.busaracenterlab.org',
+   baseURL: '//api.smartduka.busaracenterlab.org',
 });
 
 instance.interceptors.request.use(
