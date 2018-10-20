@@ -48,6 +48,7 @@
         if (newValue) {
           setTimeout(() => {
             this.usersName = localStorage.getItem('userFirstName');
+            console.log('>>>'+this.usersName);
           },3000);
         }
       }
