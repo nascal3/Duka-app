@@ -36,18 +36,23 @@
         show() {
             return this.$store.getters.isAuth;
         }
-
       },
       methods: {
           logout() {
             this.$store.dispatch('logOut');
           }
       },
-    mounted() {
-      setTimeout(() =>{
-        this.usersName = localStorage.getItem('userFirstName');
-      },2000);
-    }
+    watch: {
+      show(newValue, oldValue) {
+        console.log(newValue);
+        if (newValue) {
+          setTimeout(() => {
+            this.usersName = localStorage.getItem('userFirstName');
+          },3000);
+        }
+      }
+    },
+
   }
 
 </script>
