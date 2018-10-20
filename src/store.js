@@ -37,6 +37,7 @@ export default new Vuex.Store({
         },
         clearAllData (state) {
             state.idToken = null;
+            state.usersName = null;
         }
   },
   actions: {
