@@ -42,6 +42,18 @@ export default new Vuex.Store({
               router.replace('/signin');
           },expirationTime * 1000)
       },
+      setCurrentUsersName({commit, state}, userEmail) {
+        if (!state.idToken) return;
+        axios.get('/api/v1/users/')
+            .then((res) => {
+              const data = res.data.results;
+              // === FILTER OUT THE USERS DATA ===
+              const userData = data.find( user => {
+                return user.email === userEmail;
+              });
+              localStorage.setItem('userFirstName', userData.first_name);
+            }).catch( err => console.error(err.message));
+      },
       login ({commit, state, dispatch}, authData) {
 
           let setData =  qs.stringify({
@@ -62,6 +74,8 @@ export default new Vuex.Store({
               });
               dispatch('setLogoutTimer', res.data.expires_in);
               router.replace('/dashboard');
+              // ==== RUN PROCESS TO GET & FILTER USERNAME ====
+              dispatch('setCurrentUsersName', authData.username);
 
           }).catch(err => {
              commit('setErrorState', true);
@@ -91,6 +105,7 @@ export default new Vuex.Store({
           commit('clearAllData');
           localStorage.removeItem('token');
           localStorage.removeItem('expiresIn');
+          localStorage.removeItem('userFirstName');
           router.replace('/signin');
       }
 
