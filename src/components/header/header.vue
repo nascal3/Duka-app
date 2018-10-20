@@ -28,12 +28,12 @@
 
   export default {
       computed: {
-          show() {
-              return this.$store.getters.isAuth;
-          },
         usersName() {
-            console.log(this.$store.getters.getUsersName);
-            return this.$store.getters.getUsersName;
+          console.log(this.$store.getters.getUsersName);
+          return this.$store.getters.getUsersName;
+        },
+        show() {
+            return this.$store.getters.isAuth;
         }
 
       },
