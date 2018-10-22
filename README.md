@@ -1,4 +1,4 @@
-# vue-update
+# Video resources app
 
 > Vue media resource app
 
