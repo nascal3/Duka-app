@@ -1,3 +1,5 @@
 module.exports = {
-  baseUrl: ‘/Duka-app/’
+  baseUrl: process.env.NODE_ENV === 'production'
+      ? '/Duka-app/'
+      : '/'
 }
