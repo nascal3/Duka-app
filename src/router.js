@@ -6,7 +6,7 @@ import WelcomePage from './components/welcome/welcome.vue'
 import DashboardPage from './components/dashboard/dashboard.vue'
 import SigninPage from './components/auth/signin.vue'
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 const routes = [
   { path: '/', component: WelcomePage },
@@ -21,6 +21,6 @@ const routes = [
       }
     }
   }
-]
+];
 
 export default new VueRouter({mode: 'history', routes})
