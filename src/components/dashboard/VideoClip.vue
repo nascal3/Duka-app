@@ -4,7 +4,7 @@
             <img src="../../assets/vidThumb.jpg">
             <div class="videoThumb-title">
                 {{video.name}}
-            </div>
+        </div>
         </div>
 
 
